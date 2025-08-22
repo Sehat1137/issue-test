@@ -52,4 +52,4 @@ jobs:
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         run: |
-          sulguk send "${{ secrets.CHAT_ID }}" "${{ steps.get-issue.outputs.message_path }}"
+          sulguk send "${{ env.CHAT_ID }}" "${{ steps.get-issue.outputs.message_path }}"
