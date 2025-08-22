@@ -36,7 +36,7 @@ jobs:
           message="🚀 <b>New issue created by ${{ github.actor }}</b><br/><br/>"
           message+="📌 <b>Title:</b> ${{ github.event.issue.title }}<br/><br/>"
           message+="🔗 <b>Link:</b> ${{ github.event.issue.html_url }}<br/><br/>"
-          message+="📝 <b>Description:</b><br/$html_body"
+          message+="📝 <b>Description:</b><br/><blockquote expandable>$html_body</blockquote>"
 
           # Save message to file
           echo "$message" > message.html
