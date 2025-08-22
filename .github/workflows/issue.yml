@@ -1,0 +1,49 @@
+name: issue
+
+on:
+  issues:
+    types:
+      - opened
+
+jobs:
+  notify:
+    name: "Telegram notification via sulguk"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install sulguk[cli]
+
+      - name: Get issue in HTML format
+        id: get-issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          response=$(curl -s \
+            -H "Accept: application/vnd.github.html+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            "${{ github.event.issue.url }}")
+
+          # Extract body_html from JSON response
+          html_body=$(echo "$response" | jq -r '.body_html')
+
+          # Prepare message with HTML formatting
+          message="🚀 <b>New issue created by ${{ github.actor }}</b>\n\n"
+          message+="📌 <b>Title:</b> ${{ github.event.issue.title }}\n\n"
+          message+="🔗 <b>Link:</b> ${{ github.event.issue.html_url }}\n\n"
+          message+="📝 <b>Description:</b>\n$html_body"
+
+          # Save message to file
+          echo "$message"
+          echo "$message" > message.html
+          echo "message_path=message.html" >> $GITHUB_OUTPUT
+
+      - name: Send notification via sulguk
+        run: |
+          export BOT_TOKEN="${{ secrets.BOT_TOKEN }}"
+          sulguk send -1001358216383 ${{ steps.get-issue.outputs.message_path }}
