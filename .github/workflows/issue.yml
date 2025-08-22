@@ -17,7 +17,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install sulguk[cli]
+          pip install 'sulguk[cli]'
 
       - name: Get issue in HTML format
         id: get-issue
@@ -39,11 +39,17 @@ jobs:
           message+="📝 <b>Description:</b>\n$html_body"
 
           # Save message to file
-          echo "$message"
           echo "$message" > message.html
-          echo "message_path=message.html" >> $GITHUB_OUTPUT
+          echo "message_path=$(pwd)/message.html" >> $GITHUB_OUTPUT
+
+      - name: Debug - check if file exists
+        run: |
+          echo "File path: ${{ steps.get-issue.outputs.message_path }}"
+          ls -la ${{ steps.get-issue.outputs.message_path }}
+          cat ${{ steps.get-issue.outputs.message_path }}
 
       - name: Send notification via sulguk
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         run: |
-          export BOT_TOKEN="${{ secrets.BOT_TOKEN }}"
-          sulguk send ${{ env.CHAT_ID }} ${{ steps.get-issue.outputs.message_path }}
+          sulguk send "${{ secrets.CHAT_ID }}" "${{ steps.get-issue.outputs.message_path }}"
