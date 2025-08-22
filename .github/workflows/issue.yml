@@ -46,4 +46,4 @@ jobs:
       - name: Send notification via sulguk
         run: |
           export BOT_TOKEN="${{ secrets.BOT_TOKEN }}"
-          sulguk send -1002687575030 ${{ steps.get-issue.outputs.message_path }}
+          sulguk send ${{ env.CHAT_ID }} ${{ steps.get-issue.outputs.message_path }}
