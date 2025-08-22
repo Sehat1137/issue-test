@@ -36,7 +36,7 @@ jobs:
           message="🚀 <b>New issue created by ${{ github.actor }}</b><br/><br/>"
           message+="📌 <b>Title:</b> ${{ github.event.issue.title }}<br/><br/>"
           message+="🔗 <b>Link:</b> ${{ github.event.issue.html_url }}<br/><br/>"
-          message+="📝 <b>Description:</b>\n$html_body"
+          message+="📝 <b>Description:</b><br/$html_body"
 
           # Save message to file
           echo "$message" > message.html
@@ -52,4 +52,4 @@ jobs:
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         run: |
-          sulguk send -1002687575030 "${{ steps.get-issue.outputs.message_path }}"  --base-url https://github.com/Sehat1137/issue-test
+          sulguk send -1002687575030 "${{ steps.get-issue.outputs.message_path }}" --base-url https://github.com/Sehat1137/issue-test
